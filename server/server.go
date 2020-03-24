@@ -2,12 +2,11 @@ package main
 
 import (
 	"context"
+	pb "github.com/yossefaz/microservice_rpc/proto/consignment"
+	"google.golang.org/grpc"
 	"log"
 	"net"
 	"sync"
-
-	pb "github.com/yossefaz/microservice_rpc/proto/consignment"
-	"google.golang.org/grpc"
 )
 
 const (
@@ -18,14 +17,14 @@ type repository interface {
 	Create(*pb.Consignment) (*pb.Consignment, error)
 	GetAll() []*pb.Consignment
 }
-
-// Repository - Dummy repository, this simulates the use of a datastore
-// of some kind. We'll replace this with a real implementation later on.
+//
+//// Repository - Dummy repository, this simulates the use of a datastore
+//// of some kind. We'll replace this with a real implementation later on.
 type Repository struct {
 	mu           sync.RWMutex
 	consignments []*pb.Consignment
 }
-
+//
 // Create a new consignment
 func (repo *Repository) Create(consignment *pb.Consignment) (*pb.Consignment, error) {
 	repo.mu.Lock()
@@ -72,6 +71,8 @@ func (s *service) GetConsignments(ctx context.Context, req *pb.GetRequest) (*pb.
 
 func main() {
 
+	//Repository struct implements all the repository interface methods
+	// those methods are the same defined in the protobuf file
 	repo := &Repository{}
 
 	// Set-up our gRPC server.
@@ -80,6 +81,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
+
 
 	// Register our service with the gRPC server, this will tie our
 	// implementation into the auto-generated interface code for our
