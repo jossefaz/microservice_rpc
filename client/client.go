@@ -2,15 +2,13 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
+	pb "github.com/yossefaz/microservice_rpc/proto/consignment"
+	"google.golang.org/grpc"
 	"io/ioutil"
 	"log"
 	"os"
-
-	"context"
-
-	pb "github.com/yossefaz/microservice_rpc/proto/consignment"
-	"google.golang.org/grpc"
 )
 
 const (
@@ -54,4 +52,14 @@ func main() {
 		log.Fatalf("Could not greet: %v", err)
 	}
 	log.Printf("Created: %t", r.Created)
+
+	getAll, err := client.GetConsignments(context.Background(), &pb.GetRequest{})
+	if err != nil {
+		log.Fatalf("Could not list consignments : %v", err)
+
+	}
+
+	for _, v := range getAll.GetConsignments(){
+		log.Println(v)
+	}
 }
